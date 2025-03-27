@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeux PlayStation - GameStore</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <div class="headerContainer">
+        <div class="header">
+            <a href="index.html" class="logo">
+                <img src="images/logo.jpg.png" alt="GameStore Logo" class="logo-img">
+                <span class="logo-text">GameStore</span>
+            </a>
+            <ul class="headerLinks">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="xbox-games.html">Xbox</a></li>
+                <li><a href="playstation-games.html" class="active">PlayStation</a></li>
+                <li><a href="pc-games.html">PC</a></li>
+                <li><a href="favorites.html"><i class="fas fa-heart"></i> Favoris</a></li>
+                <li><a href="cart.html"><i class="fas fa-shopping-cart"></i> Panier</a></li>
+                <li><a href="signin.html" class="signin-btn"><i class="fas fa-user"></i> Sign In</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Most Played Section -->
+        <section class="games-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <span class="section-tag">Les Plus Joués</span>
+                    <h1>Jeux PlayStation Populaires</h1>
+                </div>
+                <button class="btn outline">Voir tout</button>
+            </div>
+
+            <div class="games-grid">
+                <!-- Game Card 1 -->
+                <div class="card game-card">
+                    <div class="cardImg">
+                        <img src="images/XBOX17.jpg" alt="Spider-Man 2">
+                        <div class="card-badges">
+                            <span class="badge new">Nouveau</span>
+                            <span class="badge hot">Populaire</span>
+                        </div>
+                    </div>
+                    <div class="cardInfo">
+                        <p class="genre">Action/Aventure</p>
+                        <h3 class="cardName">Marvel's Spider-Man 2</h3>
+                        <div class="card-details">
+                            <div class="price">€69.99</div>
+                            <div class="card-actions">
+                                <button class="btn addToCart">
+                                    <i class="fas fa-shopping-cart"></i> Ajouter
+                                </button>
+                                <button class="btn outline addToFavorites">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Card 2 -->
+                <div class="card game-card">
+                    <div class="cardImg">
+                        <img src="images/XBOX13.jpg" alt="God of War Ragnarök">
+                        <div class="card-badges">
+                            <span class="badge bestseller">Best-seller</span>
+                        </div>
+                    </div>
+                    <div class="cardInfo">
+                        <p class="genre">Action/Aventure</p>
+                        <h3 class="cardName">God of War Ragnarök</h3>
+                        <div class="card-details">
+                            <div class="price">€59.99</div>
+                            <div class="card-actions">
+                                <button class="btn addToCart">
+                                    <i class="fas fa-shopping-cart"></i> Ajouter
+                                </button>
+                                <button class="btn outline addToFavorites">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Card 3 -->
+                <div class="card game-card">
+                    <div class="cardImg">
+                        <img src="images/XBOX4.jpg" alt="Final Fantasy XVI">
+                        <div class="card-badges">
+                            <span class="badge discount">-25%</span>
+                        </div>
+                    </div>
+                    <div class="cardInfo">
+                        <p class="genre">RPG</p>
+                        <h3 class="cardName">Final Fantasy XVI</h3>
+                        <div class="card-details">
+                            <div class="price">€52.49</div>
+                            <div class="card-actions">
+                                <button class="btn addToCart">
+                                    <i class="fas fa-shopping-cart"></i> Ajouter
+                                </button>
+                                <button class="btn outline addToFavorites">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RPG Section -->
+        <section class="games-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <span class="section-tag">RPG</span>
+                    <h2>⚔️ Jeux de Rôle</h2>
+                </div>
+                <button class="btn outline">Voir tout</button>
+            </div>
+
+            <div class="games-grid">
+                <!-- Game Card 1 -->
+                <div class="card game-card">
+                    <div class="cardImg">
+                        <img src="images/XBOX10.jpg" alt="Persona 5 Royal">
+                        <div class="card-badges">
+                            <span class="badge bestseller">Best-seller</span>
+                        </div>
+                    </div>
+                    <div class="cardInfo">
+                        <p class="genre">RPG</p>
+                        <h3 class="cardName">Persona 5 Royal</h3>
+                        <div class="card-details">
+                            <div class="price">€49.99</div>
+                            <div class="card-actions">
+                                <button class="btn addToCart">
+                                    <i class="fas fa-shopping-cart"></i> Ajouter
+                                </button>
+                                <button class="btn outline addToFavorites">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Card 2 -->
+                <div class="card game-card">
+                    <div class="cardImg">
+                        <img src="images/XBOX5.jpg" alt="Demon's Souls">
+                        <div class="card-badges">
+                            <span class="badge hot">Populaire</span>
+                        </div>
+                    </div>
+                    <div class="cardInfo">
+                        <p class="genre">Action RPG</p>
+                        <h3 class="cardName">Demon's Souls</h3>
+                        <div class="card-details">
+                            <div class="price">€69.99</div>
+                            <div class="card-actions">
+                                <button class="btn addToCart">
+                                    <i class="fas fa-shopping-cart"></i> Ajouter
+                                </button>
+                                <button class="btn outline addToFavorites">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Action/Adventure Section -->
+        <section class="games-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <span class="section-tag">Action/Aventure</span>
+                    <h2>🎮 Action / Aventure</h2>
+                </div>
+                <button class="btn outline">Voir tout</button>
+            </div>
+
+            <div class="games-grid">
+                <!-- Game Card 1 -->
+                <div class="card game-card">
+                    <div class="cardImg">
+                        <img src="images/XBOX2.jpg" alt="Horizon Forbidden West">
+                        <div class="card-badges">
+                            <span class="badge discount">-40%</span>
+                        </div>
+                    </div>
+                    <div class="cardInfo">
+                        <p class="genre">Action/Aventure</p>
+                        <h3 class="cardName">Horizon Forbidden West</h3>
+                        <div class="card-details">
+                            <div class="price">€41.99</div>
+                            <div class="card-actions">
+                                <button class="btn addToCart">
+                                    <i class="fas fa-shopping-cart"></i> Ajouter
+                                </button>
+                                <button class="btn outline addToFavorites">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footerContent">
+            <div class="footerSection">
+                <h3>À propos</h3>
+                <p>GameStore est votre destination pour les meilleurs jeux vidéo aux meilleurs prix.</p>
+            </div>
+            <div class="footerSection">
+                <h3>Liens rapides</h3>
+                <a href="index.html">Accueil</a>
+                <a href="xbox-games.html">Xbox</a>
+                <a href="playstation-games.html">PlayStation</a>
+                <a href="pc-games.html">PC</a>
+            </div>
+            <div class="footerSection">
+                <h3>Contact</h3>
+                <p>Email: contact@gamestore.com</p>
+                <p>Tél: +32 1 23 45 67 89</p>
+            </div>
+        </div>
+        <div class="footerBottom">
+            <p>&copy; 2024 GameStore. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

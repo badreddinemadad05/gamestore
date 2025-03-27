@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <title>GameStore - Mes Favoris</title>
+</head>
+<body>
+    <!-- Header -->
+    <div class="headerContainer">
+        <div class="header">
+            <a href="index.html" class="logo">
+                <img src="images/logo.jpg.png" alt="GameStore Logo" class="logo-img">
+                <span class="logo-text">GameStore</span>
+            </a>
+            <ul class="headerLinks">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="xbox-games.html">Xbox</a></li>
+                <li><a href="playstation-games.html">PlayStation</a></li>
+                <li><a href="pc-games.html">PC</a></li>
+                <li><a href="favorites.html" class="active"><i class="fas fa-heart"></i> Favoris</a></li>
+                <li><a href="cart.html"><i class="fas fa-shopping-cart"></i> Panier</a></li>
+                <li><a href="signin.html" class="signin-btn"><i class="fas fa-user"></i> Sign In</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <div class="page-header">
+            <h1><i class="fas fa-heart"></i> Mes Jeux Favoris</h1>
+            <p class="subtitle">Retrouvez ici tous les jeux que vous avez ajoutés à vos favoris</p>
+        </div>
+
+        <div class="favorites-container">
+            <div id="favoriteItems" class="games-grid">
+                <!-- Les jeux favoris seront ajoutés ici dynamiquement -->
+            </div>
+
+            <!-- Message si aucun favori -->
+            <div id="emptyFavorites" class="empty-state">
+                <i class="fas fa-heart-broken"></i>
+                <h2>Aucun favori pour le moment</h2>
+                <p>Explorez notre catalogue et ajoutez des jeux à vos favoris !</p>
+                <a href="index.html" class="btn primary">Découvrir les jeux</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>GameStore</h3>
+                <p>Votre destination gaming préférée</p>
+            </div>
+            <div class="footer-section">
+                <h3>Liens Rapides</h3>
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="xbox-games.html">Xbox</a></li>
+                    <li><a href="playstation-games.html">PlayStation</a></li>
+                    <li><a href="pc-games.html">PC</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <ul>
+                    <li><i class="fas fa-envelope"></i> contact@gamestore.com</li>
+                    <li><i class="fas fa-phone"></i> +33 1 23 45 67 89</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 GameStore. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

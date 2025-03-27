@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="GameStore - Votre boutique de jeux vidéo en ligne. Trouvez les meilleurs jeux pour Xbox, PlayStation et PC." />
+    <meta name="keywords" content="jeux vidéo, gaming, Xbox, PlayStation, PC games, achat jeux" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <div class="headerContainer">
+        <div class="header">
+            <a href="index.html" class="logo">
+                <img src="images/logo.jpg.png" alt="GameStore Logo" class="logo-img">
+                <span class="logo-text">GameStore</span>
+            </a>
+            <ul class="headerLinks">
+                <li><a href="index.html" class="active">Accueil</a></li>
+                <li><a href="xbox-games.html">Xbox</a></li>
+                <li><a href="playstation-games.html">PlayStation</a></li>
+                <li><a href="pc-games.html">PC</a></li>
+                <li><a href="favorites.html"><i class="fas fa-heart"></i> Favoris</a></li>
+                <li><a href="cart.html"><i class="fas fa-shopping-cart"></i> Panier</a></li>
+                <li><a href="signin.html" class="signin-btn"><i class="fas fa-user"></i> Sign In</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- HERO SECTION -->
+    <section class="heroSection">
+      <div class="heroContent">
+        <div class="leftSide">
+          <span class="welcome">Bienvenue sur GameStore</span>
+          <h1 class="slogan">Votre destination gaming ultime !</h1>
+          <p class="description">
+            Découvrez notre sélection exceptionnelle de jeux vidéo pour toutes les plateformes. 
+            Des dernières sorties aux grands classiques, trouvez votre prochain jeu préféré sur GameStore. 
+            Livraison rapide et service client 5 étoiles garantis ! 
+          </p>
+          <form class="searchBar" role="search">
+            <input type="search" placeholder="Rechercher un jeu..." aria-label="Rechercher un jeu" />
+            <button type="submit" class="btn searchBtn">Rechercher</button>
+          </form>
+        </div>
+        <div class="imageContainer">
+          <img src="https://i.pinimg.com/736x/62/67/e9/6267e906163112870821d978e30a8437.jpg" height="150px" width="350px" alt="Collection de jeux vidéo" class="heroImage" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Nouveautés Section -->
+    <section class="games-section">
+      <div class="section-header">
+          <div class="section-title">
+              <span class="section-tag">🆕 NOUVEAUTÉS</span>
+              <h1>Derniers Jeux Ajoutés</h1>
+          </div>
+          <button class="btn outline">Voir tout</button>
+      </div>
+
+      <div class="games-grid">
+          <!-- Nouveau Jeu 1 -->
+          <div class="card game-card">
+              <div class="cardImg">
+                  <img src="images/XBOX5.jpg" alt="Assassin's Creed Mirage">
+                  <div class="card-badges">
+                      <span class="badge new">Nouveau</span>
+                  </div>
+              </div>
+              <div class="cardInfo">
+                  <p class="genre">Action/Aventure</p>
+                  <h3 class="cardName">Assassin's Creed Mirage</h3>
+                  <div class="card-details">
+                      <div class="price">€59.99</div>
+                      <div class="card-actions">
+                          <button class="btn addToCart">
+                              <i class="fas fa-shopping-cart"></i> Ajouter
+                          </button>
+                          <button class="btn outline addToFavorites">
+                              <i class="fas fa-heart"></i>
+                          </button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Nouveau Jeu 2 -->
+          <div class="card game-card">
+              <div class="cardImg">
+                  <img src="images/XBOX1.jpg" alt="EA SPORTS FC 24">
+                  <div class="card-badges">
+                      <span class="badge new">Nouveau</span>
+                  </div>
+              </div>
+              <div class="cardInfo">
+                  <p class="genre">Sport</p>
+                  <h3 class="cardName">EA SPORTS FC 24</h3>
+                  <div class="card-details">
+                      <div class="price">€69.99</div>
+                      <div class="card-actions">
+                          <button class="btn addToCart">
+                              <i class="fas fa-shopping-cart"></i> Ajouter
+                          </button>
+                          <button class="btn outline addToFavorites">
+                              <i class="fas fa-heart"></i>
+                          </button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </section>
+
+    <!-- À Venir Section -->
+    <section class="games-section coming-soon">
+        <div class="section-header">
+            <div class="section-title">
+                <span class="section-tag">🎯 PROCHAINEMENT</span>
+                <h2>Jeux à Venir</h2>
+            </div>
+            <button class="btn outline">Voir tout</button>
+        </div>
+
+        <div class="games-grid">
+            <!-- Jeu à Venir 1 -->
+            <div class="card game-card upcoming">
+                <div class="cardImg">
+                    <img src="images/XBOX3.jpg" alt="Prochain Grand Jeu">
+                    <div class="card-badges">
+                        <span class="badge coming-soon">Précommande</span>
+                    </div>
+                </div>
+                <div class="cardInfo">
+                    <p class="genre">Action/RPG</p>
+                    <h3 class="cardName">Grand RPG 2024</h3>
+                    <div class="release-date">Sortie prévue: Juin 2024</div>
+                    <div class="card-details">
+                        <div class="price">€69.99</div>
+                        <div class="card-actions">
+                            <button class="btn preorder">
+                                <i class="fas fa-clock"></i> Précommander
+                            </button>
+                            <button class="btn outline addToFavorites">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Catégories par Plateforme -->
+    <section class="platforms-section">
+        <div class="section-header">
+            <div class="section-title">
+                <span class="section-tag">🎮 PLATEFORMES</span>
+                <h2>Explorez par Écosystème</h2>
+            </div>
+        </div>
+
+        <div class="platforms-grid">
+            <!-- Xbox -->
+            <a href="xbox-games.html" class="platform-card">
+                <img src="images/XBOX10.jpg" alt="Xbox Games">
+                <div class="platform-overlay">
+                    <div class="platform-content">
+                        <h3>Xbox Series X|S</h3>
+                        <p>Les meilleurs jeux Xbox</p>
+                        <span class="platform-cta">
+                            Explorer <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- PlayStation -->
+            <a href="playstation-games.html" class="platform-card">
+                <img src="images/XBOX11.jpg" alt="PlayStation Games">
+                <div class="platform-overlay">
+                    <div class="platform-content">
+                        <h3>PlayStation 5</h3>
+                        <p>L'univers PlayStation</p>
+                        <span class="platform-cta">
+                            Explorer <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- PC -->
+            <a href="pc-games.html" class="platform-card">
+                <img src="images/XBOX12.jpg" alt="PC Games">
+                <div class="platform-overlay">
+                    <div class="platform-content">
+                        <h3>PC Gaming</h3>
+                        <p>La puissance du PC</p>
+                        <span class="platform-cta">
+                            Explorer <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletterSection">
+        <h2>Restez informé !</h2>
+        <div class="newsletterContent">
+            <p>Inscrivez-vous à notre newsletter pour recevoir les dernières nouveautés et offres exclusives.</p>
+            <form class="newsletterForm">
+                <input type="email" placeholder="Votre adresse email" required />
+                <button type="submit" class="btn">S'inscrire</button>
+            </form>
+        </div>
+        <!-- Toast Notification(ajouter panier) -->
+<div id="toast" class="toast hidden">Ajouté au panier !</div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footerContent">
+            <div class="footerSection">
+                <h3>À propos</h3>
+                <p>GameStore est votre destination pour les meilleurs jeux vidéo aux meilleurs prix.</p>
+            </div>
+            <div class="footerSection">
+                <h3>Liens rapides</h3>
+                <a href="index.html">Accueil</a>
+                <a href="xbox-games.html">Xbox</a>
+                <a href="playstation-games.html">PlayStation</a>
+                <a href="pc-games.html">PC</a>
+            </div>
+            <div class="footerSection">
+                <h3>Contact</h3>
+                <p>Email: bareddine@gamestore.com</p>
+                <p>       Youssef@gamestore.com</p>
+                <p>       Ferial@gamestore.com</p>
+                <p>       Zakia@gamestore.com</p>
+                <p>Tél: +32 1 23 45 67 89</p>
+            </div>
+        </div>
+        <div class="footerBottom">
+            <p>&copy; 2024 GameStore. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
