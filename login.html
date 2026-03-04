@@ -142,9 +142,8 @@
 
     <script>
         const ADMIN_EMAIL = 'badreddine.madad@gmail.com';
-        const API_BASES = window.location.hostname === 'localhost'
-            ? ['http://localhost:8000', 'http://127.0.0.1:8000']
-            : ['http://127.0.0.1:8000', 'http://localhost:8000'];
+        const API_BASES = ['https://gamestore-4wsy.onrender.com'];
+
 
         async function loginRequest(payload) {
             let lastError = null;
@@ -210,5 +209,6 @@
     </script>
 
 </body>
+
 
 </html>
