@@ -427,7 +427,8 @@
                 }
 
                 // Recuperer les informations de l'utilisateur
-                const userResponse = await fetch('http://127.0.0.1:8000/api/users/me', {
+               const userResponse = await fetch('https://gamestore-4wsy.onrender.com/api/users/me', {
+
                     headers: {
                         'Authorization': 'Bearer ' + token
                     }
@@ -487,3 +488,4 @@
 </body>
 
 </html>
+
