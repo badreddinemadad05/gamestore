@@ -115,9 +115,8 @@
     </div>
 
     <script>
-        const API_BASES = window.location.hostname === "localhost"
-            ? ["http://localhost:8000/api", "http://127.0.0.1:8000/api"]
-            : ["http://127.0.0.1:8000/api", "http://localhost:8000/api"];
+       const API_BASES = ["https://gamestore-4wsy.onrender.com/api"];
+
 
         async function apiFetch(path, options = {}) {
             let lastError = null;
@@ -541,6 +540,7 @@
     </script>
 </body>
 </html>
+
 
 
 
