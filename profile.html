@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="fr"> <!-- Change en francais -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil - Vos Commandes</title>
+    <!-- Inclusion des fichiers CSS -->
+    <link rel="stylesheet" href="style.css?v=20260303-6">
+    <!-- Inclusion des icones Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Conteneur principal du profil */
+        .profile-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* En-tete du profil avec avatar et informations utilisateur */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Style de l'avatar circulaire */
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: #666;
+        }
+
+        /* Style du titre du profil */
+        .profile-info h1 {
+            margin: 0;
+            color: var(--text-color);
+        }
+
+        /* Style des informations du profil */
+        .profile-info p {
+            margin: 0.5rem 0;
+            color: #666;
+        }
+
+        /* Section des commandes */
+        .orders-section {
+            margin-top: 2rem;
+        }
+
+        /* Carte individuelle de commande */
+        .order-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* En-tete de la commande avec numero et date */
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Grille des articles de la commande */
+        .order-items {
+            display: grid;
+            gap: 1rem;
+        }
+
+        /* Style d'un article individuel */
+        .order-item {
+            display: flex;
+            gap: 1rem;
+            padding: 0.5rem;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+
+        /* Style de l'image de l'article */
+        .order-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        /* Badge de statut de commande */
+        .order-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* Style pour commande livree */
+        .status-delivered {
+            background-color: #e6f4ea;
+            color: #1e7e34;
+        }
+
+        /* Style pour commande en cours */
+        .status-processing {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        /* Styles responsifs pour les appareils mobiles */
+        @media (max-width: 768px) {
+            /* Ajustement du padding sur mobile */
+            .profile-container {
+                padding: 0 1rem;
+            }
+
+            /* Reorganisation de l'en-tete en colonne */
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            /* Reorganisation de l'en-tete de commande */
+            .order-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="style.css?v=20260303-6" id="theme-override">
+</head>
+
+<body>
+    <!-- Header will be injected dynamically by script.js -->
+
+    <!-- Conteneur principal du profil -->
+    <div class="profile-container">
+        <!-- En-tete avec avatar et informations utilisateur -->
+        <div class="profile-header">
+            <div class="profile-avatar">
+                
+            </div>
+            <div class="profile-info">
+                <h1>Votre Profil</h1>
+                <p class="user-email"></p>
+            </div>
+        </div>
+
+        <!-- Section historique des commandes -->
+        <div class="orders-section">
+            <h2>Historique des Commandes</h2>
+            <div id="orders-list">
+                <!-- Les commandes seront chargees ici dynamiquement -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Verifie si l'utilisateur est authentifie
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+            return token;
+        }
+
+        // Charge les donnees de l'utilisateur connecte
+        async function loadUserData() {
+            const token = checkAuth();
+            try {
+                const response = await fetch('http://localhost:8000/api/users/me', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Impossible de recuperer les donnees utilisateur');
+                }
+
+                const userData = await response.json();
+                document.querySelector('.user-email').textContent = userData.email;
+            } catch (error) {
+                console.error('Erreur lors du chargement des donnees:', error);
+                alert('Erreur lors du chargement du profil');
+            }
+        }
+
+        // Charge l'historique des commandes de l'utilisateur
+        async function loadOrders() {
+            const token = checkAuth();
+            try {
+                // Recupere l'ID utilisateur a partir du token
+                const userResponse = await fetch('http://localhost:8000/api/users/me', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!userResponse.ok) {
+                    throw new Error('Impossible de recuperer les donnees utilisateur');
+                }
+
+                const userData = await userResponse.json();
+                const userId = userData.id;
+
+                // Recupere les commandes de l'utilisateur
+                const response = await fetch(`http://localhost:8000/api/users/${userId}/orders`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Impossible de recuperer les commandes');
+                }
+
+                const orders = await response.json();
+                const ordersList = document.getElementById('orders-list');
+                ordersList.innerHTML = orders.length ? '' : '<p>Aucune commande trouvee</p>';
+
+                // Affiche chaque commande
+                orders.forEach(order => {
+                    const orderCard = document.createElement('div');
+                    orderCard.className = 'order-card';
+                    orderCard.innerHTML = `
+                        <div class="order-header">
+                            <div>
+                                <strong>Commande #${order.id}</strong>
+                                <div>Commande le ${new Date(order.order_date).toLocaleDateString()}</div>
+                            </div>
+                            <span class="order-status status-${order.status.toLowerCase()}">${order.status}</span>
+                        </div>
+                        <div class="order-items">
+                            ${order.items.map(item => `
+                                <div class="order-item">
+                                    <img src="${item.product_image}" alt="${item.product_name}">
+                                    <div>
+                                        <div><strong>${item.product_name}</strong></div>
+                                        <div>Quantite : ${item.quantity}</div>
+                                        <div>${item.product_price.toFixed(2)} </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    ordersList.appendChild(orderCard);
+                });
+            } catch (error) {
+                console.error('Erreur lors du chargement des commandes:', error);
+                document.getElementById('orders-list').innerHTML = '<p>Impossible de charger les commandes</p>';
+            }
+        }
+
+        // Initialisation de la page au chargement
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserData();
+            loadOrders();
+        });
+    </script>
+</body>
+
+</html>

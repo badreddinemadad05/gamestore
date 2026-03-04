@@ -1,0 +1,549 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - GameStore</title>
+    <link rel="stylesheet" href="style.css?v=20260303-6">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background: #f3f5f8; }
+        .admin-wrap { max-width: 1200px; margin: 24px auto; padding: 0 16px; }
+        .admin-head { background: #1f2937; color: #fff; padding: 16px 20px; border-radius: 10px; margin-bottom: 16px; }
+        .tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+        .tab { border: 0; background: #fff; padding: 10px 14px; border-radius: 8px; cursor: pointer; }
+        .tab.active { background: #2563eb; color: #fff; }
+        .panel { display: none; background: #fff; border-radius: 10px; padding: 16px; }
+        .panel.active { display: block; }
+        .card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+        .order-card-completed { border: 3px solid #16a34a; border-left: 12px solid #16a34a; background: linear-gradient(180deg, #dcfce7 0%, #bbf7d0 100%); box-shadow: 0 14px 28px rgba(22, 163, 74, 0.22); }
+        .order-card-completed hr { border: 0; border-top: 2px solid #86efac; }
+        .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        .small { color: #6b7280; font-size: 13px; }
+        .btn { border: 0; border-radius: 6px; padding: 8px 10px; cursor: pointer; }
+        .btn-primary { background: #2563eb; color: #fff; }
+        .btn-danger { background: #dc2626; color: #fff; }
+        .btn-muted { background: #e5e7eb; }
+        .admin-actions { margin-top: 10px; display:flex; gap:10px; flex-wrap:wrap; }
+        .btn-history { background: linear-gradient(135deg, #0ea5e9, #2563eb); color:#fff; border:0; box-shadow: 0 8px 18px rgba(37,99,235,.25); }
+        .btn-history:hover { transform: translateY(-1px); }
+        .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .input, select, textarea { width: 100%; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px; }
+        .upload-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .img-preview { width: 120px; height: 78px; object-fit: cover; border-radius: 8px; border: 1px solid #d1d5db; background: #f3f4f6; display: none; }
+        .products-list .card { display: grid; grid-template-columns: 110px 1fr auto; gap: 12px; align-items: center; }
+        .products-list img { width: 110px; height: 72px; object-fit: cover; border-radius: 6px; background: #f3f4f6; }
+        @media (max-width: 900px) {
+            .grid { grid-template-columns: 1fr; }
+            .products-list .card { grid-template-columns: 1fr; }
+        }
+    </style>
+    <link rel="stylesheet" href="style.css?v=20260303-6" id="theme-override">
+</head>
+<body>
+    <script src="script.js?v=20260303-6"></script>
+    <div class="admin-wrap">
+        <div class="admin-head">
+            <h1>Dashboard Admin</h1>
+            <p class="small">Gestion commandes, utilisateurs, messages et produits</p>
+            <div class="admin-actions">
+                <a href="historiques-admine.html" class="btn btn-history"><i class="fa-solid fa-clock-rotate-left"></i> Historique Admine</a>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" data-panel="orders">Commandes</button>
+            <button class="tab" data-panel="users">Utilisateurs</button>
+            <button class="tab" data-panel="messages">Messages</button>
+            <button class="tab" data-panel="products">Produits</button>
+        </div>
+
+        <section id="orders" class="panel active">
+            <div id="ordersList"></div>
+        </section>
+
+        <section id="users" class="panel">
+            <div id="usersList"></div>
+        </section>
+
+        <section id="messages" class="panel">
+            <div id="messagesList"></div>
+        </section>
+
+        <section id="products" class="panel">
+            <h2>Produits</h2>
+            <div id="productStatus" class="small" style="margin-bottom:10px;"></div>
+            <form id="productForm" class="grid">
+                <input type="hidden" id="productId">
+                <div><label>Nom</label><input class="input" id="productName" required></div>
+                <div>
+                    <label>Plateforme</label>
+                    <select id="productPlatform" class="input" required>
+                        <option value="home">Accueil</option>
+                        <option value="pc">PC</option>
+                        <option value="xbox">Xbox</option>
+                        <option value="ps5">PS5</option>
+                    </select>
+                </div>
+                <div><label>Genre</label><input class="input" id="productGenre" required></div>
+                <div><label>Prix</label><input class="input" id="productPrice" type="number" step="0.01" min="0" required></div>
+                <div><label>Stock</label><input class="input" id="productStock" type="number" min="0" required></div>
+                <div>
+                    <label>Image (path)</label>
+                    <input class="input" id="productImage" placeholder="images/pc_sim_1.png" required>
+                </div>
+                <div>
+                    <label>Uploader image</label>
+                    <div class="upload-row">
+                        <input class="input" id="productImageFile" type="file" accept="image/*">
+                        <button type="button" id="uploadImageBtn" class="btn btn-muted">Uploader</button>
+                    </div>
+                    <div id="uploadStatus" class="small" style="margin-top:6px;"></div>
+                    <img id="productImagePreview" class="img-preview" alt="Apercu image produit">
+                </div>
+                <div><label>Badge</label><input class="input" id="productBadge" placeholder="new / hot / discount"></div>
+                <div><label>Visible</label><select id="productVisible" class="input"><option value="true">Oui</option><option value="false">Non</option></select></div>
+                <div style="grid-column: 1 / -1;"><label>Description</label><textarea id="productDescription" class="input"></textarea></div>
+                <div class="row" style="grid-column: 1 / -1;">
+                    <button type="submit" id="productSubmit" class="btn btn-primary">Ajouter le jeu</button>
+                    <button type="button" id="productReset" class="btn btn-muted">Nouveau</button>
+                </div>
+            </form>
+            <hr>
+            <div id="productsList" class="products-list"></div>
+        </section>
+    </div>
+
+    <script>
+        const API_BASES = window.location.hostname === "localhost"
+            ? ["http://localhost:8000/api", "http://127.0.0.1:8000/api"]
+            : ["http://127.0.0.1:8000/api", "http://localhost:8000/api"];
+
+        async function apiFetch(path, options = {}) {
+            let lastError = null;
+            for (const base of API_BASES) {
+                try {
+                    const response = await fetch(`${base}${path}`, options);
+                    if (!response.ok) {
+                        lastError = new Error(`HTTP ${response.status} sur ${base}${path}`);
+                        continue;
+                    }
+                    return response;
+                } catch (err) {
+                    lastError = err;
+                }
+            }
+            throw lastError || new Error("API inaccessible");
+        }
+
+        const tabs = document.querySelectorAll(".tab");
+        const panels = document.querySelectorAll(".panel");
+
+        tabs.forEach((tab) => {
+            tab.addEventListener("click", () => {
+                tabs.forEach((t) => t.classList.remove("active"));
+                panels.forEach((p) => p.classList.remove("active"));
+                tab.classList.add("active");
+                document.getElementById(tab.dataset.panel).classList.add("active");
+            });
+        });
+
+        function esc(v) {
+            return String(v ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+        }
+
+        function formatStatus(status) {
+            const s = String(status || "").toLowerCase();
+            if (s === "completed") return '<span class="small" style="color:#166534;font-weight:700;">Completee</span>';
+            if (s === "cancelled") return '<span class="small" style="color:#b91c1c;font-weight:700;">Annulee</span>';
+            return '<span class="small" style="color:#92400e;font-weight:700;">En attente</span>';
+        }
+
+        async function loadOrders() {
+            const box = document.getElementById("ordersList");
+            let orders = [];
+            try {
+                const response = await apiFetch("/orders");
+                orders = await response.json();
+            } catch (err) {
+                box.innerHTML = `<p>Erreur chargement commandes: ${esc(err.message)}</p>`;
+                return;
+            }
+            if (!orders.length) {
+                box.innerHTML = "<p>Aucune commande.</p>";
+                return;
+            }
+            box.innerHTML = orders.map((o) => `
+                <div class="card ${String(o.status || "").toLowerCase() === "completed" ? "order-card-completed" : ""}">
+                    <div class="row">
+                        <strong>Commande #${o.id}</strong>
+                        <span class="small">${esc(o.date || "")}</span>
+                        ${formatStatus(o.status)}
+                    </div>
+                    <hr style="margin:10px 0;">
+                    <div class="grid">
+                        <div>
+                            <div class="small"><strong>Client:</strong> ${esc(o.user_name || "")}</div>
+                            <div class="small"><strong>Email:</strong> ${esc(o.user_email || "")}</div>
+                            <div class="small"><strong>Telephone:</strong> ${esc(o.phone || "Non renseigne")}</div>
+                        </div>
+                        <div>
+                            <div class="small"><strong>Adresse:</strong> ${esc(o.shipping_address || "Non renseignee")}</div>
+                            <div class="small"><strong>Ville:</strong> ${esc(o.shipping_city || "")}</div>
+                            <div class="small"><strong>Code postal:</strong> ${esc(o.shipping_postal_code || "")}</div>
+                        </div>
+                    </div>
+                    ${o.special_instructions ? `<div class="small" style="margin-top:8px;"><strong>Instructions:</strong> ${esc(o.special_instructions)}</div>` : ""}
+                    <div style="margin-top:12px;">
+                        <strong>Produits commandes</strong>
+                        <div style="display:grid;gap:8px;margin-top:8px;">
+                            ${(o.items || []).map((it) => `
+                                <div class="card" style="margin:0;padding:8px;display:grid;grid-template-columns:64px 1fr auto;gap:10px;align-items:center;">
+                                    <img src="${esc(it.image || "")}" alt="${esc(it.name || "")}" style="width:64px;height:64px;object-fit:cover;border-radius:8px;background:#f3f4f6;">
+                                    <div>
+                                        <div><strong>${esc(it.name || "")}</strong></div>
+                                        <div class="small">Prix unitaire: ${Number(it.price || 0).toFixed(2)} EUR</div>
+                                    </div>
+                                    <div class="small" style="font-weight:700;">x${Number(it.quantity || 0)}</div>
+                                </div>
+                            `).join("")}
+                        </div>
+                    </div>
+                    <div style="margin-top:12px;text-align:right;font-weight:800;">Total: ${Number(o.total_amount || 0).toFixed(2)} EUR</div>
+                    <div class="row" style="justify-content:flex-end;margin-top:10px;">
+                        <button class="btn btn-primary" onclick="completeOrder(${o.id})">Terminer</button>
+                        <button class="btn btn-danger" onclick="archiveAndDeleteOrder(${o.id})">Supprimer</button>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        async function completeOrder(orderId) {
+            try {
+                await apiFetch(`/orders/${orderId}/status?status=completed`, { method: "PATCH" });
+                await loadOrders();
+            } catch (err) {
+                alert(`Erreur mise a jour commande: ${err.message}`);
+            }
+        }
+
+        async function archiveAndDeleteOrder(orderId) {
+            const ordersResponse = await apiFetch("/orders");
+            const orders = await ordersResponse.json();
+            const order = orders.find((o) => o.id === orderId);
+            if (!order) {
+                alert("Commande introuvable");
+                return;
+            }
+            if (String(order.status || "").toLowerCase() !== "completed") {
+                alert("Il faut d'abord terminer la commande.");
+                return;
+            }
+            if (!confirm("Supprimer cette commande et l'envoyer vers l'historique ?")) return;
+            try {
+                pushHistory("admin_order_history", order);
+                await apiFetch(`/orders/${orderId}`, { method: "DELETE" });
+                await loadOrders();
+            } catch (err) {
+                alert(`Erreur suppression commande: ${err.message}`);
+            }
+        }
+
+        async function loadUsers() {
+            const box = document.getElementById("usersList");
+            let users = [];
+            try {
+                const response = await apiFetch("/users/admin/users");
+                users = await response.json();
+            } catch (err) {
+                box.innerHTML = `<p>Erreur chargement utilisateurs: ${esc(err.message)}</p>`;
+                return;
+            }
+            if (!users.length) {
+                box.innerHTML = "<p>Aucun utilisateur.</p>";
+                return;
+            }
+            box.innerHTML = users.map((u) => `
+                <div class="card">
+                    <strong>${esc(u.username)}</strong>
+                    <div class="small">${esc(u.email)} (id: ${u.id})</div>
+                </div>
+            `).join("");
+        }
+
+        async function loadMessages() {
+            const box = document.getElementById("messagesList");
+            let messages = [];
+            try {
+                const response = await apiFetch("/contact");
+                messages = await response.json();
+            } catch (err) {
+                box.innerHTML = `<p>Erreur chargement messages: ${esc(err.message)}</p>`;
+                return;
+            }
+            if (!messages.length) {
+                box.innerHTML = "<p>Aucun message.</p>";
+                return;
+            }
+            box.innerHTML = messages.map((m) => `
+                <div class="card">
+                    <div class="row">
+                        <strong>${esc(m.subject || "Sans sujet")}</strong>
+                        <span class="small">${esc(m.date_sent || "")}</span>
+                    </div>
+                    <div class="small">${esc(m.name)} - ${esc(m.email)}</div>
+                    <p>${esc(m.message)}</p>
+                    <div class="row" style="justify-content:flex-end;">
+                        ${m.is_read ? '<span class="small" style="color:#166534;font-weight:700;">Termine</span>' : `<button class="btn btn-primary" onclick="markAsRead(${m.id})">Terminer</button>`}
+                        <button class="btn btn-danger" onclick="archiveAndDeleteMessage(${m.id})">Supprimer</button>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        async function markAsRead(id) {
+            try {
+                await apiFetch(`/contact/${id}/read`, { method: "PUT" });
+                loadMessages();
+            } catch (err) {
+                setProductStatus(`Erreur message: ${err.message}`, true);
+            }
+        }
+
+        async function archiveAndDeleteMessage(messageId) {
+            const response = await apiFetch("/contact");
+            const messages = await response.json();
+            const message = messages.find((m) => m.id === messageId);
+            if (!message) {
+                alert("Message introuvable");
+                return;
+            }
+            if (!message.is_read) {
+                alert("Il faut d'abord terminer le message.");
+                return;
+            }
+            if (!confirm("Supprimer ce message et l'envoyer vers l'historique ?")) return;
+            try {
+                pushHistory("admin_message_history", message);
+                await apiFetch(`/contact/${messageId}`, { method: "DELETE" });
+                await loadMessages();
+            } catch (err) {
+                alert(`Erreur suppression message: ${err.message}`);
+            }
+        }
+
+        function getFormPayload() {
+            const payload = {
+                name: document.getElementById("productName").value.trim(),
+                platform: document.getElementById("productPlatform").value,
+                genre: document.getElementById("productGenre").value.trim(),
+                price: Number(document.getElementById("productPrice").value),
+                stock: Number(document.getElementById("productStock").value),
+                visible: document.getElementById("productVisible").value === "true",
+                image: document.getElementById("productImage").value.trim(),
+                badge: document.getElementById("productBadge").value.trim() || null,
+                description: document.getElementById("productDescription").value.trim() || null
+            };
+            if (!payload.name || !payload.platform || !payload.genre || !payload.image) {
+                throw new Error("Champs obligatoires manquants (nom, plateforme, genre, image).");
+            }
+            if (!Number.isFinite(payload.price) || payload.price < 0) {
+                throw new Error("Prix invalide.");
+            }
+            if (!Number.isInteger(payload.stock) || payload.stock < 0) {
+                throw new Error("Stock invalide.");
+            }
+            return payload;
+        }
+
+        function setProductStatus(message, isError = false) {
+            const el = document.getElementById("productStatus");
+            if (!el) return;
+            el.textContent = message;
+            el.style.color = isError ? "#dc2626" : "#166534";
+        }
+
+        function setUploadStatus(message, isError = false) {
+            const el = document.getElementById("uploadStatus");
+            if (!el) return;
+            el.textContent = message;
+            el.style.color = isError ? "#dc2626" : "#166534";
+        }
+
+        function updateImagePreview(imagePath) {
+            const img = document.getElementById("productImagePreview");
+            if (!img) return;
+            const val = (imagePath || "").trim();
+            if (!val) {
+                img.style.display = "none";
+                img.removeAttribute("src");
+                return;
+            }
+            img.src = val;
+            img.style.display = "block";
+        }
+
+        async function uploadProductImage() {
+            const input = document.getElementById("productImageFile");
+            const btn = document.getElementById("uploadImageBtn");
+            const file = input?.files?.[0];
+            if (!file) {
+                setUploadStatus("Choisis une image d'abord.", true);
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            btn.disabled = true;
+            setUploadStatus("Upload en cours...");
+            try {
+                const response = await apiFetch("/admin/upload-image", {
+                    method: "POST",
+                    body: formData
+                });
+                const data = await response.json();
+                const imagePath = data.path || "";
+                document.getElementById("productImage").value = imagePath;
+                updateImagePreview(imagePath);
+                setUploadStatus("Image uploadee avec succes.");
+            } catch (err) {
+                setUploadStatus(`Erreur upload: ${err.message}`, true);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        function pushHistory(key, payload) {
+            const current = JSON.parse(localStorage.getItem(key) || "[]");
+            current.unshift({
+                archived_at: new Date().toISOString(),
+                ...payload
+            });
+            localStorage.setItem(key, JSON.stringify(current));
+        }
+
+        function resetProductForm() {
+            document.getElementById("productId").value = "";
+            document.getElementById("productForm").reset();
+            document.getElementById("productVisible").value = "true";
+            document.getElementById("productPlatform").value = "home";
+            document.getElementById("productSubmit").textContent = "Ajouter le jeu";
+            setUploadStatus("");
+            updateImagePreview("");
+        }
+
+        let cachedProducts = [];
+
+        async function loadProducts() {
+            const box = document.getElementById("productsList");
+            let products = [];
+            try {
+                const response = await apiFetch("/admin/products");
+                products = await response.json();
+                cachedProducts = products;
+            } catch (err) {
+                box.innerHTML = `<p>Erreur chargement produits: ${esc(err.message)}</p>`;
+                return;
+            }
+            if (!products.length) {
+                box.innerHTML = "<p>Aucun produit.</p>";
+                return;
+            }
+            box.innerHTML = products.map((p) => `
+                <div class="card">
+                    <img src="${esc(p.image)}" alt="${esc(p.name)}">
+                    <div>
+                        <strong>${esc(p.name)}</strong>
+                        <div class="small">${esc(p.platform)} - ${esc(p.genre)}</div>
+                        <div class="small">Prix: ${Number(p.price).toFixed(2)} EUR</div>
+                        <div class="small">Stock: ${p.stock} | Visible: ${p.visible ? "oui" : "non"}</div>
+                    </div>
+                    <div class="row">
+                        <button class="btn btn-primary" onclick="editProduct(${p.id})">Editer</button>
+                        <button class="btn btn-danger" onclick="deleteProduct(${p.id})">Supprimer</button>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        function editProduct(productId) {
+            const p = cachedProducts.find((item) => item.id === productId);
+            if (!p) return;
+            document.getElementById("productId").value = p.id;
+            document.getElementById("productName").value = p.name || "";
+            document.getElementById("productPlatform").value = p.platform || "pc";
+            document.getElementById("productGenre").value = p.genre || "";
+            document.getElementById("productPrice").value = p.price ?? 0;
+            document.getElementById("productStock").value = p.stock ?? 0;
+            document.getElementById("productVisible").value = p.visible ? "true" : "false";
+            document.getElementById("productImage").value = p.image || "";
+            updateImagePreview(p.image || "");
+            document.getElementById("productBadge").value = p.badge || "";
+            document.getElementById("productDescription").value = p.description || "";
+            document.getElementById("productSubmit").textContent = "Mettre a jour le jeu";
+            document.getElementById("products").scrollIntoView({ behavior: "smooth" });
+        }
+
+        async function deleteProduct(id) {
+            if (!confirm("Supprimer ce produit ?")) return;
+            try {
+                await apiFetch(`/admin/products/${id}`, { method: "DELETE" });
+                await loadProducts();
+                setProductStatus("Produit supprime avec succes.");
+            } catch (err) {
+                setProductStatus(`Erreur suppression: ${err.message}`, true);
+            }
+        }
+
+        document.getElementById("productForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const id = document.getElementById("productId").value;
+            let payload;
+            try {
+                payload = getFormPayload();
+            } catch (err) {
+                setProductStatus(err.message, true);
+                return;
+            }
+            const method = id ? "PUT" : "POST";
+            const path = id ? `/admin/products/${id}` : "/admin/products";
+
+            try {
+                await apiFetch(path, {
+                    method,
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+
+                setProductStatus(id ? "Produit mis a jour avec succes." : "Produit ajoute avec succes.");
+                resetProductForm();
+                await loadProducts();
+            } catch (err) {
+                setProductStatus(`Erreur reseau: ${err.message}`, true);
+            }
+        });
+
+        document.getElementById("productReset").addEventListener("click", resetProductForm);
+        document.getElementById("uploadImageBtn").addEventListener("click", uploadProductImage);
+        document.getElementById("productImage").addEventListener("input", (e) => updateImagePreview(e.target.value));
+
+        loadOrders();
+        loadUsers();
+        loadMessages();
+        loadProducts();
+        window.markAsRead = markAsRead;
+        window.completeOrder = completeOrder;
+        window.archiveAndDeleteOrder = archiveAndDeleteOrder;
+        window.archiveAndDeleteMessage = archiveAndDeleteMessage;
+        window.editProduct = editProduct;
+        window.deleteProduct = deleteProduct;
+    </script>
+</body>
+</html>
+
+
+
+
+
+
