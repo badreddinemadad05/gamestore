@@ -1,6 +1,5 @@
-﻿const API_CANDIDATES = window.location.hostname === "localhost"
-    ? ["http://localhost:8000", "http://127.0.0.1:8000"]
-    : ["http://127.0.0.1:8000", "http://localhost:8000"];
+const API_CANDIDATES = ["https://gamestore-4wsy.onrender.com"];
+
 
 async function apiFetch(path, options = {}) {
     let lastError = null;
@@ -574,4 +573,5 @@ window.updateQuantity = updateQuantity;
 window.removeFromCart = removeFromCart;
 window.addToFavorites = addToFavorites;
 window.removeFromFavorites = removeFromFavorites;
+
 
