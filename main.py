@@ -30,10 +30,14 @@ Paramètres:
 """
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # En production, spécifier les domaines exacts
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+   allow_origins=[
+    "https://badreddinemadad05.github.io",
+    "https://badreddinemadad05.github.io/gamestore",
+],
+allow_credentials=True,
+allow_methods=["*"],
+allow_headers=["*"],
+
 )
 
 # Middleware custom
@@ -77,3 +81,6 @@ app.include_router(
 @app.on_event("startup")
 def startup():
     init_db()
+
+
+
