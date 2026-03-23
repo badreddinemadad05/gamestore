@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - GameStore</title>
+    <link rel="stylesheet" href="style.css?v=20260303-6">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .signin-container {
+            max-width: 400px;
+            margin: 4rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+        }
+
+        .signin-title {
+            text-align: center;
+            color: var(--text-color);
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .signin-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .form-group input {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(1, 113, 249, 0.1);
+        }
+
+        .signin-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .signin-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .forgot-password a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        .signup-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <link rel="stylesheet" href="style.css?v=20260303-6" id="theme-override">
+</head>
+
+<body>
+    <script src="script.js?v=20260303-6"></script>
+    <!-- Header will be injected dynamically by script.js -->
+
+    <!-- Sign Up Content -->
+    <main class="signin-container">
+
+        <h1 class="signin-title">Inscription</h1>
+        <form class="signin-form" id="register-form">
+            <div class="form-group">
+                <label for="username">Nom d'utilisateur</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="signin-btn">S'inscrire</button>
+            <div class="signup-link">
+                Deja un compte ? <a href="login.html">Se connecter</a>
+            </div>
+        </form>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <!-- Footer content -->
+    </footer>
+
+    <script>
+        document.getElementById('register-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const userData = {
+                    username: username,
+                    email: email,
+                    password: password  // Change de hashed_password a password
+                };
+                console.log('Donnees envoyees:', userData);
+
+                const response = await fetch('http://127.0.0.1:8000/api/users/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+
+                console.log('Status:', response.status);
+                const data = await response.json();
+                console.log('Reponse recue:', data);
+
+                if (response.ok) {
+                    // Afficher le message de succes
+                    alert('Inscription reussie ! Vous pouvez maintenant vous connecter.');
+                    // Redirection vers la page de connexion
+                    window.location.href = 'login.html';
+                } else {
+                    if (data.detail === 'Email deja utilise.') {
+                        alert('Vous avez deja un compte avec cette adresse email.');
+                    } else {
+                        alert(data.detail || 'Erreur lors de l\'inscription');
+                    }
+                }
+            } catch (error) {
+                console.error('Erreur lors de l\'inscription :', error);
+                alert('Une erreur est survenue. Veuillez reessayer.');
+            }
+        });
+    </script>
+
+</body>
+
+</html>

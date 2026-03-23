@@ -1,0 +1,264 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historiques Admine - GameStore</title>
+    <link rel="stylesheet" href="style.css?v=20260303-6">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .history-wrap {
+            max-width: 1200px;
+            margin: 28px auto;
+            padding: 0 16px;
+        }
+
+        .history-hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 55%, #0ea5e9 100%);
+            color: #fff;
+            border-radius: 18px;
+            padding: 26px;
+            box-shadow: 0 22px 48px rgba(15, 23, 42, 0.28);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 18px;
+        }
+
+        .history-hero::after {
+            content: "";
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            border-radius: 999px;
+            right: -90px;
+            top: -110px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .history-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.7rem;
+            margin-bottom: 4px;
+        }
+
+        .history-sub {
+            color: rgba(255, 255, 255, 0.86);
+            margin-bottom: 12px;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .history-actions .btn {
+            border-radius: 12px;
+        }
+
+        .history-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .history-section {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid #d9e5ff;
+            border-radius: 16px;
+            backdrop-filter: blur(8px);
+            padding: 16px;
+            box-shadow: 0 14px 34px rgba(15, 23, 42, 0.1);
+        }
+
+        .history-section h2 {
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .history-empty {
+            padding: 14px;
+            border-radius: 12px;
+            background: #f8fbff;
+            border: 1px dashed #c7d5ff;
+            color: #64748b;
+        }
+
+        .history-card {
+            border: 1px solid #d8e4ff;
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 10px;
+            background: #fff;
+        }
+
+        .history-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .history-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 6px;
+        }
+
+        .history-meta {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .history-details {
+            margin-top: 10px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px 14px;
+        }
+
+        .history-detail {
+            color: #334155;
+            font-size: 0.92rem;
+        }
+
+        .history-detail strong {
+            color: #0f172a;
+        }
+
+        .history-items {
+            margin-top: 10px;
+            display: grid;
+            gap: 6px;
+        }
+
+        .history-item {
+            background: #f8fbff;
+            border: 1px solid #e4ecff;
+            border-radius: 10px;
+            padding: 8px 10px;
+            color: #334155;
+            font-size: 0.93rem;
+        }
+
+        .history-total {
+            margin-top: 10px;
+            text-align: right;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        @media (max-width: 768px) {
+            .history-hero { padding: 20px; border-radius: 14px; }
+            .history-title { font-size: 1.35rem; }
+            .history-section { border-radius: 14px; }
+            .history-details { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <script src="script.js?v=20260303-6"></script>
+
+    <div class="history-wrap">
+        <header class="history-hero">
+            <h1 class="history-title"><i class="fa-solid fa-clock-rotate-left"></i> Historiques Admine</h1>
+            <p class="history-sub">Archive des commandes et messages traites puis supprimes.</p>
+            <div class="history-actions">
+                <a href="admin-dashboard.html" class="btn btn-muted"><i class="fa-solid fa-arrow-left"></i> Retour Admin</a>
+            </div>
+        </header>
+
+        <main class="history-grid">
+            <section class="history-section">
+                <h2><i class="fa-solid fa-cart-shopping"></i> Historique Commandes</h2>
+                <div id="orderHistoryList"></div>
+            </section>
+
+            <section class="history-section">
+                <h2><i class="fa-solid fa-envelope"></i> Historique Messages</h2>
+                <div id="messageHistoryList"></div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        function esc(v) {
+            return String(v ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+        }
+
+        function orderStatusLabel(status) {
+            const s = String(status || "").toLowerCase();
+            if (s === "completed") return "Terminee";
+            if (s === "cancelled") return "Annulee";
+            return "En attente";
+        }
+
+        function loadOrderHistory() {
+            const box = document.getElementById("orderHistoryList");
+            const items = JSON.parse(localStorage.getItem("admin_order_history") || "[]");
+            if (!items.length) {
+                box.innerHTML = '<div class="history-empty">Aucune commande archivee.</div>';
+                return;
+            }
+
+            box.innerHTML = items.map((o) => `
+                <article class="history-card">
+                    <div class="history-row">
+                        <strong>Commande #${o.id}</strong>
+                        <span class="history-meta">Archivee le: ${esc(o.archived_at || "")}</span>
+                    </div>
+
+                    <div class="history-details">
+                        <div class="history-detail"><strong>Client:</strong> ${esc(o.user_name || "")}</div>
+                        <div class="history-detail"><strong>Email:</strong> ${esc(o.user_email || "")}</div>
+                        <div class="history-detail"><strong>Telephone:</strong> ${esc(o.phone || "Non renseigne")}</div>
+                        <div class="history-detail"><strong>Date:</strong> ${esc(o.date || "")}</div>
+                        <div class="history-detail"><strong>Adresse:</strong> ${esc(o.shipping_address || "Non renseignee")}</div>
+                        <div class="history-detail"><strong>Ville:</strong> ${esc(o.shipping_city || "")}</div>
+                        <div class="history-detail"><strong>Code postal:</strong> ${esc(o.shipping_postal_code || "")}</div>
+                        <div class="history-detail"><strong>Statut:</strong> ${esc(orderStatusLabel(o.status))}</div>
+                    </div>
+
+                    ${o.special_instructions ? `<div class="history-detail" style="margin-top:8px;"><strong>Instructions:</strong> ${esc(o.special_instructions)}</div>` : ""}
+
+                    <div class="history-items">
+                        ${(o.items || []).map((it) => `
+                            <div class="history-item">${esc(it.name || "")} x${Number(it.quantity || 0)} - ${Number(it.price || 0).toFixed(2)} EUR</div>
+                        `).join("")}
+                    </div>
+
+                    <div class="history-total">Total: ${Number(o.total_amount || 0).toFixed(2)} EUR</div>
+                </article>
+            `).join("");
+        }
+
+        function loadMessageHistory() {
+            const box = document.getElementById("messageHistoryList");
+            const items = JSON.parse(localStorage.getItem("admin_message_history") || "[]");
+            if (!items.length) {
+                box.innerHTML = '<div class="history-empty">Aucun message archive.</div>';
+                return;
+            }
+            box.innerHTML = items.map((m) => `
+                <article class="history-card">
+                    <div class="history-row">
+                        <strong>${esc(m.subject || "Sans sujet")}</strong>
+                        <span class="history-meta">Archive le: ${esc(m.archived_at || "")}</span>
+                    </div>
+                    <div class="history-meta">${esc(m.name || "")} - ${esc(m.email || "")}</div>
+                    <p style="margin-top:6px; color:#1f2937;">${esc(m.message || "")}</p>
+                </article>
+            `).join("");
+        }
+
+        loadOrderHistory();
+        loadMessageHistory();
+    </script>
+</body>
+</html>
