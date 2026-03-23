@@ -1,6 +1,7 @@
 ﻿const API_CANDIDATES = window.location.hostname === "localhost"
     ? ["http://localhost:8000", "http://127.0.0.1:8000"]
     : ["http://127.0.0.1:8000", "http://localhost:8000"];
+const STATIC_PRODUCTS_PATH = "data/products.json";
 
 async function apiFetch(path, options = {}) {
     let lastError = null;
@@ -21,6 +22,8 @@ async function apiFetch(path, options = {}) {
 
 let cart = JSON.parse(localStorage.getItem("cart") || "[]");
 let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+const refreshTimers = new Map();
+let localCatalogPromise = null;
 const FALLBACK_PRODUCTS = [
     { name: "Minecraft", platform: "pc", genre: "Simulation", price: 14.99, stock: 25, visible: true, image: "images/pc_sim_1.png", badge: "bestseller" },
     { name: "ZOO PLANET", platform: "pc", genre: "Simulation", price: 64.99, stock: 8, visible: true, image: "images/pc_sim_2.png", badge: "hot" },
@@ -65,6 +68,65 @@ function parsePrice(text) {
 
 function formatPrice(value) {
     return "EUR " + Number(value || 0).toFixed(2);
+}
+
+function delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function apiFetchJsonWithRetry(path, options = {}) {
+    const retries = Number(options.retries ?? 0);
+    const delayMs = Number(options.delayMs ?? 400);
+    let lastError = null;
+
+    for (let attempt = 0; attempt <= retries; attempt += 1) {
+        try {
+            const response = await apiFetch(path, options.fetchOptions || {});
+            return await response.json();
+        } catch (err) {
+            lastError = err;
+            if (attempt < retries) {
+                await delay(delayMs);
+            }
+        }
+    }
+
+    throw lastError || new Error("API unreachable");
+}
+
+async function loadLocalCatalog() {
+    if (!localCatalogPromise) {
+        localCatalogPromise = fetch(STATIC_PRODUCTS_PATH, { cache: "no-store" })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status} on ${STATIC_PRODUCTS_PATH}`);
+                }
+                return response.json();
+            })
+            .then((products) => Array.isArray(products) ? products : [])
+            .catch(() => FALLBACK_PRODUCTS);
+    }
+
+    const products = await localCatalogPromise;
+    return Array.isArray(products) ? products : FALLBACK_PRODUCTS;
+}
+
+function scheduleCatalogRefresh(key, loader, delayMs = 1400) {
+    if (refreshTimers.has(key)) return;
+
+    const timer = setTimeout(async () => {
+        refreshTimers.delete(key);
+        try {
+            const refreshed = await loader(true);
+            if (!refreshed) {
+                scheduleCatalogRefresh(key, loader, Math.min(delayMs + 600, 5000));
+            }
+        } catch (_err) {
+            scheduleCatalogRefresh(key, loader, Math.min(delayMs + 600, 5000));
+        }
+    }, delayMs);
+
+    refreshTimers.set(key, timer);
 }
 
 function showToast(message, type = "info") {
@@ -339,15 +401,15 @@ async function updateHeaderUser() {
     }
 }
 
-async function loadPlatformProducts() {
+async function loadPlatformProducts(isBackgroundRefresh = false) {
     const platform = document.body.dataset.platform;
     const container = document.getElementById("platformGamesContainer");
-    if (!platform || !container) return;
+    if (!platform || !container) return false;
 
     function renderProducts(products, warningMessage = "") {
         if (!products.length) {
             container.innerHTML = '<p class="empty-state">Aucun jeu disponible pour le moment.</p>';
-            return;
+            return false;
         }
 
         container.innerHTML = `${warningMessage ? `<p class="small" style="grid-column:1/-1;color:#b45309;">${escapeHtml(warningMessage)}</p>` : ""}` + products
@@ -382,35 +444,47 @@ async function loadPlatformProducts() {
 
         container.querySelectorAll(".addToCart").forEach((button) => button.addEventListener("click", addToCart));
         container.querySelectorAll(".addToFavorites").forEach((button) => button.addEventListener("click", addToFavoritesFromGame));
+        initCardTilt();
+        return true;
     }
 
     try {
-        const response = await apiFetch(`/api/products?platform=${encodeURIComponent(platform)}`);
-        const products = await response.json();
-        if (!products.length) {
-            const fallback = FALLBACK_PRODUCTS.filter((p) => p.platform === platform && p.visible);
-            renderProducts(fallback);
-            return;
-        }
-        renderProducts(products);
+        const products = await apiFetchJsonWithRetry(`/api/products?platform=${encodeURIComponent(platform)}`, {
+            retries: isBackgroundRefresh ? 0 : 6,
+            delayMs: 450,
+        });
+        return renderProducts(products);
     } catch (err) {
-        const fallback = FALLBACK_PRODUCTS.filter((p) => p.platform === platform && p.visible);
-        renderProducts(fallback);
+        const fallbackSource = await loadLocalCatalog();
+        const fallback = fallbackSource.filter((p) => p.platform === platform && p.visible);
+        const rendered = renderProducts(
+            fallback,
+            "Backend unavailable. Demo catalog loaded from bundled data."
+        );
+        if (!isBackgroundRefresh) {
+            scheduleCatalogRefresh(`platform:${platform}`, loadPlatformProducts);
+        }
+        return rendered;
     }
 }
 
-async function loadHomeProducts() {
+async function loadHomeProducts(isBackgroundRefresh = false) {
     const path = (window.location.pathname || "").toLowerCase();
     const isHome = path.endsWith("/index.html") || path === "/" || path === "";
-    if (!isHome) return;
+    if (!isHome) return false;
 
     const grid = document.querySelector(".games-section .games-grid");
-    if (!grid) return;
+    if (!grid) return false;
 
     function render(products, warningMessage = "") {
-        if (!products.length) return;
         const metric = document.getElementById("metric-games");
         if (metric) metric.textContent = `${products.length}+`;
+        if (!products.length) {
+            grid.innerHTML = warningMessage
+                ? `<p class="empty-state">${escapeHtml(warningMessage)}</p>`
+                : '<p class="empty-state">Aucun jeu disponible pour le moment.</p>';
+            return false;
+        }
         grid.innerHTML = `${warningMessage ? `<p class="small" style="grid-column:1/-1;color:#b45309;">${escapeHtml(warningMessage)}</p>` : ""}` + products
             .slice(0, 12)
             .map((p) => {
@@ -443,27 +517,34 @@ async function loadHomeProducts() {
 
         grid.querySelectorAll(".addToCart").forEach((button) => button.addEventListener("click", addToCart));
         grid.querySelectorAll(".addToFavorites").forEach((button) => button.addEventListener("click", addToFavoritesFromGame));
+        initCardTilt();
+        return true;
     }
 
     try {
-        // Priorite aux jeux explicitement affectes a l'accueil
-        const homeResp = await apiFetch("/api/products?platform=home");
-        const homeProducts = await homeResp.json();
+        const homeProducts = await apiFetchJsonWithRetry("/api/products?platform=home", {
+            retries: isBackgroundRefresh ? 0 : 6,
+            delayMs: 450,
+        });
         if (homeProducts.length) {
-            render(homeProducts);
-            return;
+            return render(homeProducts);
         }
 
-        // Fallback: sinon afficher le catalogue global visible
-        const response = await apiFetch("/api/products");
-        const products = await response.json();
-        if (!products.length) {
-            render(FALLBACK_PRODUCTS.filter((p) => p.visible));
-            return;
-        }
-        render(products);
+        const products = await apiFetchJsonWithRetry("/api/products", {
+            retries: isBackgroundRefresh ? 0 : 3,
+            delayMs: 450,
+        });
+        return render(products);
     } catch (err) {
-        render(FALLBACK_PRODUCTS.filter((p) => p.visible));
+        const fallbackSource = await loadLocalCatalog();
+        const rendered = render(
+            fallbackSource.filter((p) => p.visible),
+            "Backend unavailable. Demo catalog loaded from bundled data."
+        );
+        if (!isBackgroundRefresh) {
+            scheduleCatalogRefresh("home", loadHomeProducts);
+        }
+        return rendered;
     }
 }
 
