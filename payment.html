@@ -1,0 +1,493 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement - GameStore</title>
+    <link rel="stylesheet" href="style.css?v=20260303-6">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .payment-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #1a237e;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .payment-summary {
+            background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .payment-summary h2 {
+            color: white;
+
+            .payment-form {
+                display: grid;
+                gap: 30px;
+            }
+
+            .form-section {
+                background: white;
+                padding: 30px;
+                border-radius: 15px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            }
+
+            .form-group {
+                display: grid;
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+
+            .form-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 30px;
+            }
+
+            .payment-form h2 {
+                color: #1a237e;
+                font-size: 1.8em;
+                margin-bottom: 25px;
+                border-bottom: 3px solid #e8eaf6;
+                padding-bottom: 15px;
+            }
+
+            .payment-form label {
+                font-weight: 500;
+                color: #3949ab;
+                font-size: 1.1em;
+            }
+
+            .payment-form input,
+            .payment-form textarea {
+                width: 100%;
+                padding: 15px;
+                border: 2px solid #e8eaf6;
+                border-radius: 10px;
+                font-size: 1em;
+                transition: all 0.3s ease;
+                background: white;
+            }
+
+            .payment-form input:focus,
+            .payment-form textarea:focus {
+                border-color: #2196F3;
+                box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+                outline: none;
+            }
+
+            .payment-form textarea {
+                resize: vertical;
+                min-height: 100px;
+            }
+
+            .card-input-wrapper,
+            .cvv-input-wrapper {
+                position: relative;
+            }
+
+            .card-input-wrapper i,
+            .cvv-input-wrapper i {
+                position: absolute;
+                right: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #2196F3;
+                font-size: 1.2em;
+            }
+
+            .submit-button {
+                background: linear-gradient(135deg, #00c853, #64dd17);
+                color: white;
+                border: none;
+                padding: 20px 40px;
+                border-radius: 15px;
+                font-size: 1.3em;
+                cursor: pointer;
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                margin-top: 40px;
+                width: 100%;
+                position: relative;
+                overflow: hidden;
+                box-shadow: 0 8px 25px rgba(0, 200, 83, 0.3);
+            }
+
+            .submit-button::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+                transform: translateX(-100%) rotate(45deg);
+                transition: transform 0.6s;
+            }
+
+            .submit-button .button-content {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 15px;
+                position: relative;
+                z-index: 1;
+            }
+
+            .submit-button .button-text {
+                font-weight: 700;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+            }
+
+            .submit-button i {
+                font-size: 1.2em;
+                transition: all 0.4s ease;
+            }
+
+            .submit-button i.fa-lock {
+                background: rgba(255, 255, 255, 0.2);
+                padding: 8px;
+                border-radius: 50%;
+            }
+
+            .submit-button:hover {
+                background: linear-gradient(135deg, #00e676, #76ff03);
+                box-shadow: 0 12px 30px rgba(0, 200, 83, 0.4);
+                transform: translateY(-3px);
+            }
+
+            .submit-button:hover::before {
+                transform: translateX(100%) rotate(45deg);
+            }
+
+            .submit-button:hover i.fa-arrow-right {
+                transform: translateX(8px);
+            }
+
+            .submit-button:hover i.fa-lock {
+                transform: rotate(-10deg);
+            }
+
+            .submit-button:active {
+                transform: translateY(1px);
+                box-shadow: 0 5px 15px rgba(0, 200, 83, 0.3);
+            }
+
+            @keyframes pulse {
+                0% {
+                    transform: scale(1);
+                }
+
+                50% {
+                    transform: scale(1.05);
+                }
+
+                100% {
+                    transform: scale(1);
+                }
+            }
+
+            .submit-button:not(:disabled) {
+                animation: pulse 2s infinite;
+            }
+
+
+            /* Animation pour le spinner */
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .fa-spinner {
+                animation: spin 1s linear infinite;
+            }
+
+            .card-input-wrapper,
+            .cvv-input-wrapper {
+                position: relative;
+                display: flex;
+                align-items: center;
+            }
+
+            .card-input-wrapper .card-icon {
+                position: absolute;
+                left: 12px;
+                color: #3949ab;
+            }
+
+            .card-input-wrapper input {
+                padding-left: 45px;
+            }
+
+            .cvv-help {
+                position: absolute;
+                right: 12px;
+                color: #3949ab;
+                cursor: help;
+            }
+
+            .cvv-input-wrapper input {
+                padding-right: 35px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="style.css?v=20260303-6" id="theme-override">
+</head>
+
+<body>
+    <div class="payment-container">
+        <h1>Finaliser votre commande</h1>
+
+        <form id="paymentForm" class="payment-form">
+            <div class="form-section">
+                <h2><i class="fas fa-shipping-fast"></i> Informations de livraison</h2>
+                <div class="form-group">
+                    <label>Nom complet</label>
+                    <input type="text" id="fullName" required placeholder="Ex: John Doe">
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="email" required placeholder="Ex: john@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label>Telephone</label>
+                    <input type="tel" id="phone" required placeholder="Ex: 06 12 34 56 78">
+                </div>
+
+                <div class="form-group">
+                    <label>Adresse</label>
+                    <input type="text" id="address" required placeholder="Ex: 123 rue de la Paix">
+                </div>
+
+                <div class="form-group">
+                    <label>Ville</label>
+                    <input type="text" id="city" required placeholder="Ex: Paris">
+                </div>
+
+                <div class="form-group">
+                    <label>Code postal</label>
+                    <input type="text" id="zipCode" required placeholder="Ex: 75000">
+                </div>
+
+                <div class="form-group">
+                    <label>Instructions speciales (optionnel)</label>
+                    <textarea id="instructions" placeholder="Ex: Digicode, etage, etc."></textarea>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2><i class="fas fa-credit-card"></i> Informations de paiement</h2>
+                <div class="form-group">
+                    <label>Numero de carte</label>
+                    <div class="card-input-wrapper">
+                        <input type="text" id="cardNumber" required placeholder="1234 5678 9012 3456" maxlength="19">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Date d'expiration</label>
+                        <input type="text" id="expiryDate" required placeholder="MM/YY" maxlength="5">
+                    </div>
+
+                    <div class="form-group half">
+                        <label>CVV</label>
+                        <div class="cvv-input-wrapper">
+                            <input type="text" id="cvv" required placeholder="123" maxlength="3">
+                            <i class="fas fa-question-circle"
+                                title="Le code de securite a 3 chiffres au dos de votre carte"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-button">
+                <span class="button-content">
+                    <i class="fas fa-lock"></i>
+                    <span class="button-text">Payer en toute securite</span>
+                    <i class="fas fa-arrow-right"></i>
+                </span>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // Formater le numero de carte en groupes de 4 chiffres
+        document.getElementById('cardNumber').addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+            let formattedValue = '';
+            for (let i = 0; i < value.length; i++) {
+                if (i > 0 && i % 4 === 0) {
+                    formattedValue += ' ';
+                }
+                formattedValue += value[i];
+            }
+            e.target.value = formattedValue;
+        });
+
+        // Formater la date d'expiration
+        document.getElementById('expiryDate').addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+            if (value.length > 2) {
+                value = value.substr(0, 2) + '/' + value.substr(2);
+            }
+            e.target.value = value;
+        });
+
+        // Gerer la soumission du formulaire
+        document.getElementById('paymentForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            // Simuler le traitement du paiement
+            const button = e.target.querySelector('button');
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Traitement en cours...';
+
+            // Recuperer les infos du formulaire
+            const orderInfo = {
+                delivery: {
+                    fullName: document.getElementById('fullName').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    address: document.getElementById('address').value,
+                    zipCode: document.getElementById('zipCode').value,
+                    city: document.getElementById('city').value,
+                    instructions: document.getElementById('instructions').value
+                },
+                payment: {
+                    cardNumber: document.getElementById('cardNumber').value.replace(/\s/g, ''),
+                    expiryDate: document.getElementById('expiryDate').value,
+                    cvv: document.getElementById('cvv').value
+                }
+            };
+
+            // Recuperer le panier depuis le localStorage
+            let cart = [];
+            try {
+                const cartStr = localStorage.getItem('cart');
+                if (cartStr) {
+                    cart = JSON.parse(cartStr);
+                }
+            } catch (err) {
+                cart = [];
+            }
+
+            // Construire le tableau items attendu par le backend
+            const items = cart.map(item => ({
+                product_name: item.name || item.product_name || '',
+                product_price: parseFloat(item.price || item.product_price || 0),
+                quantity: parseInt(item.quantity || 1),
+                product_image: item.image || item.product_image || ''
+            }));
+
+            // Calculer le total_amount
+            const total_amount = items.reduce((sum, item) => sum + (item.product_price * item.quantity), 0);
+
+            // Simuler un delai de traitement
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            try {
+                // Creer la commande dans le backend
+                // Recuperer le token d'authentification
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    alert('Vous devez etre connecte pour passer une commande.');
+                    window.location.href = 'signin.html';
+                    return;
+                }
+
+                // Recuperer les informations de l'utilisateur
+               const userResponse = await fetch('https://gamestore-4wsy.onrender.com/api/users/me', {
+
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+
+                if (!userResponse.ok) {
+                    alert('Erreur lors de la recuperation des informations utilisateur');
+                    return;
+                }
+
+                const userData = await userResponse.json();
+
+                const response = await fetch('https://gamestore-4wsy.onrender.com/api/orders', {
+
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({
+                        user_id: userData.id, // Utilisation de l'ID de l'utilisateur connecte
+                        total_amount: total_amount,
+                        shipping_address: orderInfo.delivery.address,
+                        shipping_city: orderInfo.delivery.city,
+                        shipping_postal_code: orderInfo.delivery.zipCode,
+                        phone_number: orderInfo.delivery.phone,
+                        special_instructions: orderInfo.delivery.instructions,
+                        items: items
+                    })
+                });
+
+                if (!response.ok) {
+                    let errorText = await response.text();
+                    let errorMsg = 'Erreur lors de la creation de la commande.\n\n';
+                    errorMsg += 'Status: ' + response.status + '\n';
+                    errorMsg += 'Reponse: ' + errorText;
+                    console.error('Reponse erreur backend:', response, errorText);
+                    alert(errorMsg);
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fas fa-lock"></i> Payer maintenant';
+                    return;
+                }
+
+                // Nettoyer le panier apres succes
+                localStorage.removeItem('cart');
+
+                // Rediriger vers la page de confirmation
+                window.location.href = 'order-confirmation.html';
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert('Erreur lors du paiement. Veuillez reessayer.');
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-lock"></i> Payer maintenant';
+            }
+        });
+    </script>
+    <script src="script.js?v=20260303-6"></script>
+</body>
+
+</html>
+
+

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css?v=20260303-6">
+    <title>GameStore - Mes Favoris</title>
+</head>
+
+<body>
+    <script src="script.js?v=20260303-6"></script>
+    <!-- Header will be injected dynamically by script.js -->
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <div class="page-header">
+            <h1><i class="fas fa-heart"></i> Mes Jeux Favoris</h1>
+            <p class="subtitle">Retrouvez ici tous les jeux que vous avez ajoutes a vos favoris</p>
+        </div>
+
+        <div class="favorites-container">
+            <div id="favoriteItems" class="games-grid">
+                <!-- Les jeux favoris seront ajoutes ici dynamiquement -->
+            </div>
+
+            <!-- Message si aucun favori -->
+            <div id="emptyFavorites" class="empty-state">
+                <i class="fas fa-heart-broken"></i>
+                <h2>Aucun favori pour le moment</h2>
+                <p>Explorez notre catalogue et ajoutez des jeux a vos favoris !</p>
+                <a href="index.html" class="btn primary">Decouvrir les jeux</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>GameStore</h3>
+                <p>Votre destination gaming preferee</p>
+            </div>
+            <div class="footer-section">
+                <h3>Liens Rapides</h3>
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="xbox-games.html">Xbox</a></li>
+                    <li><a href="playstation5-games.html">PlayStation5</a></li>
+                    <li><a href="pc-games.html">PC</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <ul>
+                    <li><i class="fas fa-envelope"></i> contact@gamestore.com</li>
+                    <li><i class="fas fa-phone"></i> +33 1 23 45 67 89</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 GameStore. Tous droits reserves.</p>
+        </div>
+    </footer>
+
+    <script src="script.js?v=20260303-6"></script>
+</body>
+
+</html>

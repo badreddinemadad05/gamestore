@@ -1,6 +1,9 @@
 # GameStore
-
 GameStore is a full-stack web project for browsing and ordering video games across multiple platforms. It combines a static frontend with a FastAPI backend and a local SQLite database, making it easy to run and demonstrate locally.
+
+## Live Demo
+
+https://badreddinemadad05.github.io/Gamestore/index.html
 
 ## Overview
 
