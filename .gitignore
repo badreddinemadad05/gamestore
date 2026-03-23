@@ -9,3 +9,6 @@ backend/__pycache__/
 backend/routes/__pycache__/
 backend/gamestore.db
 FRONTend/images/uploads/
+gamestore.db
+images/uploads/
+routes/__pycache__/
