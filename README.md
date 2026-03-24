@@ -3,7 +3,7 @@ GameStore is a full-stack web project for browsing and ordering video games acro
 
 ## Live Demo
 
-https://badreddinemadad05.github.io/Gamestore/index.html
+https://gamestore-one.vercel.app/FRONTend/index.html
 
 ## Overview
 
